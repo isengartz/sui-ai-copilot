@@ -1,8 +1,5 @@
-import {
-  SuiTransactionBlockResponse,
-  SuiAddress,
-  TransactionBlock,
-} from "@mysten/sui.js";
+import { SuiTransactionBlockResponse } from "@mysten/sui/client";
+import { Transaction } from "@mysten/sui/transactions";
 
 /**
  * Risk level of a transaction
@@ -56,9 +53,9 @@ export interface TransactionExplanation {
  */
 export interface ExplainTransactionRequest {
   /** The transaction block to be executed */
-  transactionBlock: TransactionBlock | string;
+  transactionBlock: Transaction | string;
   /** The sender's address */
-  sender: SuiAddress;
+  sender: string;
   /** Additional context about the transaction */
   context?: TransactionContext;
 }

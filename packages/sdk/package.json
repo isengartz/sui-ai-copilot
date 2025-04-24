@@ -39,7 +39,7 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
-    "@mysten/sui.js": "^0.54.1",
+    "@mysten/sui": "^1.28.2",
     "@sui-ai-copilot/shared": "workspace:*"
   }
 }

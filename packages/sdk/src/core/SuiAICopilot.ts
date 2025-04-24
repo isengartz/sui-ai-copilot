@@ -1,4 +1,5 @@
-import { TransactionBlock, SuiClient, JsonRpcProvider } from "@mysten/sui.js";
+import { SuiClient } from "@mysten/sui/client";
+import { Transaction } from "@mysten/sui/transactions";
 import {
   ExplainTransactionRequest,
   ExplainTransactionResponse,
@@ -79,7 +80,7 @@ export class SuiAICopilot {
    * Explain a transaction using the AI copilot
    */
   public async explainTransaction(
-    transactionBlock: TransactionBlock,
+    transactionBlock: Transaction,
     sender: string,
     context?: TransactionContext
   ): Promise<ExplainTransactionResponse> {

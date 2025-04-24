@@ -1,7 +1,7 @@
 // Export all types from their respective modules
-export * from "./types/transaction";
-export * from "./types/widget";
-export * from "./types/api";
+export * from "./types/widget.js";
+export * from "./types/api.js";
+export * from "./types/transaction.js";
 
 // Constants
 export const SDK_VERSION = "0.1.0";

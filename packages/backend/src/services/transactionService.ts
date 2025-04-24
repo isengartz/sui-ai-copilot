@@ -1,9 +1,11 @@
-import { TransactionBlock, SuiTransactionBlockResponse } from "@mysten/sui.js";
+import { SuiTransactionBlockResponse } from "@mysten/sui/client";
+import { Transaction } from "@mysten/sui/transactions";
 import {
   ExplainTransactionRequest,
   ExplainTransactionResponse,
   TransactionExplanation,
   TransactionContext,
+  RiskLevel,
 } from "@sui-ai-copilot/shared";
 import { logger } from "../utils/logger";
 import { cache } from "../utils/cache";
@@ -59,9 +61,7 @@ export class TransactionService {
       const txBlockString =
         typeof transactionBlock === "string"
           ? transactionBlock
-          : TransactionBlock.from(
-              transactionBlock as TransactionBlock
-            ).serialize();
+          : Transaction.from(transactionBlock as Transaction).serialize();
 
       // Check cache if enabled
       if (this.enableCache) {
@@ -121,7 +121,7 @@ export class TransactionService {
         explanation: `We encountered an error while analyzing this transaction: ${
           (error as Error).message
         }. Please review the transaction carefully before approving.`,
-        riskLevel: "UNKNOWN",
+        riskLevel: RiskLevel.UNKNOWN,
         risks: ["Unable to analyze transaction due to an error"],
         confidence: 0,
         impact: "Unknown impact. Please verify the transaction manually.",
@@ -138,7 +138,7 @@ export class TransactionService {
    * Extract context from a transaction block
    */
   private extractTransactionContext(
-    transactionBlock: TransactionBlock
+    transactionBlock: Transaction
   ): TransactionContext | undefined {
     try {
       const tx = transactionBlock.blockData;
@@ -151,13 +151,17 @@ export class TransactionService {
 
       if (moveCalls.length === 0) return undefined;
 
-      const firstCall = moveCalls[0];
+      const firstCall = moveCalls[0] as any;
+
+      // Extract target information from the MoveCall
+      const targetString = firstCall.target || "";
+      const targetParts = targetString.split("::");
 
       // Extract target and function information
       return {
-        packageId: firstCall.target.split("::")[0],
-        module: firstCall.target.split("::")[1],
-        function: firstCall.target.split("::")[2],
+        packageId: targetParts[0] || "",
+        module: targetParts[1] || "",
+        function: targetParts[2] || "",
       };
     } catch (error) {
       logger.error("Error extracting transaction context", {

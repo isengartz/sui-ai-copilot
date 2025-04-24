@@ -1,6 +1,7 @@
-import express from "express";
+import express, { Application } from "express";
 import cors from "cors";
 import helmet from "helmet";
+// @ts-ignore - Morgan types are not available
 import morgan from "morgan";
 import dotenv from "dotenv";
 import { ApiEndpoint } from "@sui-ai-copilot/shared";
@@ -17,7 +18,7 @@ import { errorHandler } from "./middleware/errorHandler";
 import { requestLogger } from "./middleware/requestLogger";
 
 // Create Express app
-const app = express();
+const app: Application = express();
 const port = process.env.PORT || 3000;
 
 // Apply middleware

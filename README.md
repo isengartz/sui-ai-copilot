@@ -81,6 +81,7 @@ pnpm lint
 
 ```typescript
 import { SuiAICopilot } from '@sui-ai-copilot/sdk';
+import { TransactionBlock } from '@mysten/sui';
 
 // Initialize the copilot
 const copilot = new SuiAICopilot({
@@ -104,6 +105,7 @@ console.log(explanation.summary);
 ```typescript
 import { CopilotWidget } from '@sui-ai-copilot/widget';
 import { SuiAICopilot, WidgetPosition, WidgetTheme } from '@sui-ai-copilot/sdk';
+import { TransactionBlock } from '@mysten/sui';
 
 // In your React component
 function App() {

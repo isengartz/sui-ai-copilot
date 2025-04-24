@@ -1,8 +1,8 @@
-import express from "express";
+import express, { Router } from "express";
 import HealthController from "../controllers/healthController";
 
 // Create router
-const router = express.Router();
+const router: Router = express.Router();
 
 /**
  * @route GET /api/health

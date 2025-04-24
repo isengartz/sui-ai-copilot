@@ -1,10 +1,5 @@
-import {
-  JsonRpcProvider,
-  SuiClient,
-  TransactionBlock,
-  SuiTransactionBlockResponse,
-  DevInspectResults,
-} from "@mysten/sui.js";
+import { SuiClient, SuiTransactionBlockResponse } from "@mysten/sui/client";
+import { Transaction } from "@mysten/sui/transactions";
 import { logger } from "../utils/logger";
 
 /**
@@ -19,11 +14,11 @@ export interface SuiServiceOptions {
  * Service to interact with the Sui blockchain
  */
 export class SuiService {
-  private readonly client: JsonRpcProvider;
+  private readonly client: SuiClient;
 
   constructor(options: SuiServiceOptions = {}) {
-    this.client = new JsonRpcProvider({
-      fullnode:
+    this.client = new SuiClient({
+      url:
         options.rpcUrl ||
         process.env.SUI_RPC_URL ||
         "https://fullnode.mainnet.sui.io",
@@ -40,7 +35,7 @@ export class SuiService {
   /**
    * Get the client instance
    */
-  public getClient(): JsonRpcProvider {
+  public getClient(): SuiClient {
     return this.client;
   }
 
@@ -48,27 +43,30 @@ export class SuiService {
    * Inspect a transaction without executing it
    */
   public async inspectTransaction(
-    transactionBlock: TransactionBlock | string,
+    transactionBlock: Transaction | string,
     sender: string
-  ): Promise<DevInspectResults> {
+  ): Promise<any> {
     try {
       logger.info("Inspecting transaction", { sender });
 
       // Handle string transaction block by deserializing it
-      let txBlock: TransactionBlock;
+      let txBlock: Transaction;
       if (typeof transactionBlock === "string") {
-        txBlock = TransactionBlock.from(transactionBlock);
+        txBlock = Transaction.from(transactionBlock);
       } else {
         txBlock = transactionBlock;
       }
 
       // Ensure the transaction block is built
       if (!txBlock.blockData) {
-        await txBlock.build({ provider: this.client });
+        await txBlock.build({ client: this.client });
       }
 
+      // Use serialized form
+      const serialized = txBlock.serialize();
+
       return await this.client.devInspectTransactionBlock({
-        transactionBlock: txBlock,
+        transactionBlock: serialized,
         sender,
       });
     } catch (error) {
@@ -84,27 +82,31 @@ export class SuiService {
    * Simulate a transaction to get its effects
    */
   public async simulateTransaction(
-    transactionBlock: TransactionBlock | string,
+    transactionBlock: Transaction | string,
     sender: string
   ): Promise<SuiTransactionBlockResponse> {
     try {
       logger.info("Simulating transaction", { sender });
 
       // Handle string transaction block by deserializing it
-      let txBlock: TransactionBlock;
+      let txBlock: Transaction;
       if (typeof transactionBlock === "string") {
-        txBlock = TransactionBlock.from(transactionBlock);
+        txBlock = Transaction.from(transactionBlock);
       } else {
         txBlock = transactionBlock;
       }
 
       // Ensure the transaction block is built
       if (!txBlock.blockData) {
-        await txBlock.build({ provider: this.client });
+        await txBlock.build({ client: this.client });
       }
 
+      // Execute as a dry run
+      const serialized = txBlock.serialize();
+
       return await this.client.executeTransactionBlock({
-        transactionBlock: txBlock,
+        transactionBlock: serialized,
+        signature: ["AA=="], // Dummy signature
         options: {
           showEffects: true,
           showEvents: true,
@@ -112,7 +114,6 @@ export class SuiService {
           showInput: true,
           showBalanceChanges: true,
         },
-        requestType: "DryRun",
       });
     } catch (error) {
       logger.error("Error simulating transaction", {

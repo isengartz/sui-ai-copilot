@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { CopilotWidget } from '@sui-ai-copilot/widget';
 import { SuiAICopilot, SdkEvent, WidgetPosition, WidgetTheme } from '@sui-ai-copilot/sdk';
-import { TransactionBlock } from '@mysten/sui.js';
+import { Transaction } from '@mysten/sui/transactions';
 
 // Sample transaction for demo purposes
 const createSampleTransaction = () => {
-  const tx = new TransactionBlock();
+  const tx = new Transaction();
   tx.moveCall({
     target: '0x3::sui::transfer',
     arguments: [

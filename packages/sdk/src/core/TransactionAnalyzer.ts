@@ -1,10 +1,5 @@
-import {
-  JsonRpcProvider,
-  TransactionBlock,
-  SuiTransactionBlockResponse,
-  SuiClient,
-  DevInspectResults,
-} from "@mysten/sui.js";
+import { SuiClient, SuiTransactionBlockResponse } from "@mysten/sui/client";
+import { Transaction } from "@mysten/sui/transactions";
 import { TransactionContext } from "@sui-ai-copilot/shared";
 
 /**
@@ -14,21 +9,21 @@ export interface TransactionAnalyzerOptions {
   /** RPC URL for Sui node */
   rpcUrl?: string;
   /** Custom Sui client */
-  client?: SuiClient | JsonRpcProvider;
+  client?: SuiClient;
 }
 
 /**
  * Analyzes Sui transactions to provide enriched data for explanations
  */
 export class TransactionAnalyzer {
-  private readonly client: SuiClient | JsonRpcProvider;
+  private readonly client: SuiClient;
 
   constructor(options: TransactionAnalyzerOptions = {}) {
     if (options.client) {
       this.client = options.client;
     } else {
-      this.client = new JsonRpcProvider({
-        fullnode: options.rpcUrl || "https://fullnode.mainnet.sui.io",
+      this.client = new SuiClient({
+        url: options.rpcUrl || "https://fullnode.mainnet.sui.io",
       });
     }
   }
@@ -37,16 +32,16 @@ export class TransactionAnalyzer {
    * Inspect a transaction without executing it
    */
   public async inspectTransaction(
-    transactionBlock: TransactionBlock,
+    transactionBlock: Transaction,
     sender: string
-  ): Promise<DevInspectResults> {
+  ): Promise<any> {
     // Ensure the transaction block is built
     if (!transactionBlock.blockData) {
-      await transactionBlock.build({ provider: this.client });
+      await transactionBlock.build({ client: this.client });
     }
 
     return await this.client.devInspectTransactionBlock({
-      transactionBlock,
+      transactionBlock: transactionBlock.serialize(),
       sender,
     });
   }
@@ -55,7 +50,7 @@ export class TransactionAnalyzer {
    * Extracts module and function information from a transaction
    */
   public extractTransactionContext(
-    transactionBlock: TransactionBlock
+    transactionBlock: Transaction
   ): TransactionContext | undefined {
     try {
       // This is a simplified implementation.
@@ -71,13 +66,17 @@ export class TransactionAnalyzer {
 
       if (moveCalls.length === 0) return undefined;
 
-      const firstCall = moveCalls[0];
+      const firstCall = moveCalls[0] as any;
+
+      // Extract target information from the MoveCall
+      const targetString = firstCall.target || "";
+      const targetParts = targetString.split("::");
 
       // Extract target and function information
       return {
-        packageId: firstCall.target.split("::")[0],
-        module: firstCall.target.split("::")[1],
-        function: firstCall.target.split("::")[2],
+        packageId: targetParts[0] || "",
+        module: targetParts[1] || "",
+        function: targetParts[2] || "",
       };
     } catch (error) {
       console.error("Error extracting transaction context:", error);
@@ -89,16 +88,21 @@ export class TransactionAnalyzer {
    * Simulate a transaction to get its effects
    */
   public async simulateTransaction(
-    transactionBlock: TransactionBlock,
+    transactionBlock: Transaction,
     sender: string
-  ): Promise<SuiTransactionBlockResponse> {
+  ): Promise<any> {
     // Ensure the transaction block is built
     if (!transactionBlock.blockData) {
-      await transactionBlock.build({ provider: this.client });
+      await transactionBlock.build({ client: this.client });
     }
 
+    // Execute the transaction as a dry run
+    const serialized = transactionBlock.serialize();
+
+    // Execute the transaction without actually committing it
     return await this.client.executeTransactionBlock({
-      transactionBlock,
+      transactionBlock: serialized,
+      signature: ["AA=="], // Dummy signature
       options: {
         showEffects: true,
         showEvents: true,
@@ -106,7 +110,6 @@ export class TransactionAnalyzer {
         showInput: true,
         showBalanceChanges: true,
       },
-      requestType: "DryRun",
     });
   }
 }

@@ -1,15 +1,14 @@
-import { Anthropic } from "anthropic";
+// @ts-ignore - Ignore type errors with Anthropic SDK
+import { Anthropic } from "@anthropic-ai/sdk";
 import { OpenAI } from "openai";
-import {
-  TransactionExplanation,
-  RiskLevel,
-  SuiTransactionBlockResponse,
-} from "@sui-ai-copilot/shared";
+import { TransactionExplanation, RiskLevel } from "@sui-ai-copilot/shared";
+import { SuiTransactionBlockResponse } from "@mysten/sui/client";
 import { logger } from "../utils/logger";
 
 // Initialize LLM clients
+// @ts-ignore - Ignore type errors with Anthropic SDK
 const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
+  apiKey: process.env.ANTHROPIC_API_KEY || "",
 });
 
 const openai = new OpenAI({
@@ -63,20 +62,14 @@ export class LLMService {
     transactionEffects: string
   ): Promise<TransactionExplanation> {
     try {
-      const response = await anthropic.messages.create({
-        model: "claude-3-sonnet-20240229",
-        max_tokens: this.maxTokens,
-        temperature: this.temperature,
-        system: `You are an AI assistant that explains Sui blockchain transactions to users.
+      const prompt = `You are an AI assistant that explains Sui blockchain transactions to users.
 Your task is to analyze transaction data and effects, then provide a clear, concise explanation.
 Focus on what the transaction does, any assets involved, potential risks, and impact on the user.
 Be specific about token amounts, NFTs, permissions, or any other important details.
-Always rate the risk level (LOW, MEDIUM, HIGH, CRITICAL) based on potential impact.`,
-        messages: [
-          {
-            role: "user",
-            content: `Please explain this Sui transaction in simple terms.
-            
+Always rate the risk level (LOW, MEDIUM, HIGH, CRITICAL) based on potential impact.
+
+Please explain this Sui transaction in simple terms.
+
 Transaction Data:
 ${transactionData}
 
@@ -92,13 +85,26 @@ Format your response as a JSON object with the following structure:
   "impact": "How this affects the user's assets or permissions",
   "confidence": 85,
   "noteworthy": ["Important detail 1", "Important detail 2"]
-}`,
+}`;
+
+      // @ts-ignore - Ignore type errors with Anthropic SDK
+      const response = await (anthropic as any).messages.create({
+        model: "claude-3-sonnet-20240229",
+        max_tokens: this.maxTokens,
+        temperature: this.temperature,
+        system:
+          "You analyze blockchain transactions and explain them in simple terms, focusing on what they do and any risks.",
+        messages: [
+          {
+            role: "user",
+            content: prompt,
           },
         ],
         response_format: { type: "json_object" },
       });
 
       // Parse the JSON response
+      // @ts-ignore - Ignore type errors with Anthropic SDK response
       const content = response.content[0].text;
       return JSON.parse(content) as TransactionExplanation;
     } catch (error) {

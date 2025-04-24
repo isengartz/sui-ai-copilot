@@ -1,5 +1,5 @@
 import { SuiAICopilot } from "@sui-ai-copilot/sdk";
-import { TransactionBlock } from "@mysten/sui.js";
+import { Transaction } from "@mysten/sui/transactions";
 
 // Initialize the copilot
 const copilot = new SuiAICopilot({
@@ -13,7 +13,7 @@ const copilot = new SuiAICopilot({
 async function explainTransaction() {
   try {
     // Create a simple transaction
-    const tx = new TransactionBlock();
+    const tx = new Transaction();
 
     // Add some sample function calls
     // This is just a demonstration - in a real app you'd have actual calls

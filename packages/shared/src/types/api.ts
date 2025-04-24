@@ -1,7 +1,7 @@
 import {
   ExplainTransactionRequest,
   ExplainTransactionResponse,
-} from "./transaction";
+} from "./transaction.js";
 
 /**
  * API endpoints for the backend service
