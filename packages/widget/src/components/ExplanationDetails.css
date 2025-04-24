@@ -1,0 +1,251 @@
+.explanation-details {
+  margin-top: 8px;
+}
+
+/* Summary section */
+.explanation-summary {
+  margin-bottom: 12px;
+}
+
+.explanation-summary h4 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827; /* gray-900 */
+  line-height: 1.4;
+}
+
+/* Confidence score */
+.confidence-score {
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.confidence-label {
+  font-size: 14px;
+  color: #4b5563; /* gray-600 */
+}
+
+.confidence-bar-container {
+  width: 100%;
+  height: 8px;
+  background-color: #e5e7eb; /* gray-200 */
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.confidence-bar {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.5s ease-out;
+}
+
+.confidence-bar.high-confidence {
+  background-color: #10b981; /* success-500 */
+}
+
+.confidence-bar.medium-confidence {
+  background-color: #f59e0b; /* warning-500 */
+}
+
+.confidence-bar.low-confidence {
+  background-color: #ef4444; /* danger-500 */
+}
+
+.confidence-value {
+  font-size: 12px;
+  font-weight: 500;
+  text-align: right;
+  color: #6b7280; /* gray-500 */
+}
+
+/* Tabs navigation */
+.explanation-tabs {
+  display: flex;
+  gap: 2px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid #e5e7eb; /* gray-200 */
+}
+
+.explanation-tabs .tab {
+  padding: 8px 16px;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  font-size: 14px;
+  font-weight: 500;
+  color: #6b7280; /* gray-500 */
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.explanation-tabs .tab:hover {
+  color: #111827; /* gray-900 */
+}
+
+.explanation-tabs .tab.active {
+  color: #0ea5e9; /* primary-500 */
+  border-bottom-color: #0ea5e9; /* primary-500 */
+}
+
+/* Tab content */
+.tab-content {
+  padding: 8px 0;
+}
+
+.tab-content p {
+  margin: 0 0 12px 0;
+  line-height: 1.6;
+}
+
+.tab-content p:last-child {
+  margin-bottom: 0;
+}
+
+/* Details tab */
+.details-tab .impact-section,
+.details-tab .noteworthy-section {
+  margin-bottom: 16px;
+}
+
+.details-tab h5 {
+  margin: 0 0 8px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #111827; /* gray-900 */
+}
+
+.details-tab ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.details-tab li {
+  margin-bottom: 4px;
+}
+
+/* Risks tab */
+.risks-tab .risks-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.risks-tab .risk-item {
+  padding: 8px 12px;
+  margin-bottom: 8px;
+  background-color: #fee2e2; /* red-100 */
+  border-left: 3px solid #ef4444; /* danger-500 */
+  border-radius: 4px;
+  color: #b91c1c; /* danger-700 */
+}
+
+.risks-tab .no-risks {
+  color: #059669; /* success-600 */
+  background-color: #d1fae5; /* green-100 */
+  padding: 8px 12px;
+  border-radius: 4px;
+  text-align: center;
+}
+
+/* Dark theme adjustments */
+.dark .explanation-summary h4 {
+  color: #f9fafb; /* gray-50 */
+}
+
+.dark .confidence-label {
+  color: #9ca3af; /* gray-400 */
+}
+
+.dark .confidence-bar-container {
+  background-color: #374151; /* gray-700 */
+}
+
+.dark .confidence-value {
+  color: #9ca3af; /* gray-400 */
+}
+
+.dark .explanation-tabs {
+  border-bottom-color: #374151; /* gray-700 */
+}
+
+.dark .explanation-tabs .tab {
+  color: #9ca3af; /* gray-400 */
+}
+
+.dark .explanation-tabs .tab:hover {
+  color: #f9fafb; /* gray-50 */
+}
+
+.dark .explanation-tabs .tab.active {
+  color: #38bdf8; /* primary-400 */
+  border-bottom-color: #38bdf8; /* primary-400 */
+}
+
+.dark .details-tab h5 {
+  color: #f9fafb; /* gray-50 */
+}
+
+.dark .risks-tab .risk-item {
+  background-color: rgba(239, 68, 68, 0.2); /* danger-500 with opacity */
+  border-left-color: #ef4444; /* danger-500 */
+  color: #fca5a5; /* red-300 */
+}
+
+.dark .risks-tab .no-risks {
+  color: #34d399; /* green-400 */
+  background-color: rgba(16, 185, 129, 0.2); /* success-500 with opacity */
+}
+
+/* System theme dark mode adjustments */
+@media (prefers-color-scheme: dark) {
+  .system-theme .explanation-summary h4 {
+    color: #f9fafb; /* gray-50 */
+  }
+
+  .system-theme .confidence-label {
+    color: #9ca3af; /* gray-400 */
+  }
+
+  .system-theme .confidence-bar-container {
+    background-color: #374151; /* gray-700 */
+  }
+
+  .system-theme .confidence-value {
+    color: #9ca3af; /* gray-400 */
+  }
+
+  .system-theme .explanation-tabs {
+    border-bottom-color: #374151; /* gray-700 */
+  }
+
+  .system-theme .explanation-tabs .tab {
+    color: #9ca3af; /* gray-400 */
+  }
+
+  .system-theme .explanation-tabs .tab:hover {
+    color: #f9fafb; /* gray-50 */
+  }
+
+  .system-theme .explanation-tabs .tab.active {
+    color: #38bdf8; /* primary-400 */
+    border-bottom-color: #38bdf8; /* primary-400 */
+  }
+
+  .system-theme .details-tab h5 {
+    color: #f9fafb; /* gray-50 */
+  }
+
+  .system-theme .risks-tab .risk-item {
+    background-color: rgba(239, 68, 68, 0.2); /* danger-500 with opacity */
+    border-left-color: #ef4444; /* danger-500 */
+    color: #fca5a5; /* red-300 */
+  }
+
+  .system-theme .risks-tab .no-risks {
+    color: #34d399; /* green-400 */
+    background-color: rgba(16, 185, 129, 0.2); /* success-500 with opacity */
+  }
+} 

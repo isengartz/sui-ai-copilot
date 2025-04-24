@@ -1,0 +1,76 @@
+.risk-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 8px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1;
+  color: white;
+  text-transform: uppercase;
+}
+
+/* Risk level colors */
+.risk-badge.bg-success-500 {
+  background-color: #10b981;
+}
+
+.risk-badge.bg-warning-500 {
+  background-color: #f59e0b;
+}
+
+.risk-badge.bg-danger-500 {
+  background-color: #ef4444;
+}
+
+.risk-badge.bg-danger-600 {
+  background-color: #dc2626;
+}
+
+.risk-badge.bg-gray-500 {
+  background-color: #6b7280;
+}
+
+/* Dark theme adjustments */
+.dark .risk-badge.bg-success-500 {
+  background-color: #059669;
+}
+
+.dark .risk-badge.bg-warning-500 {
+  background-color: #d97706;
+}
+
+.dark .risk-badge.bg-danger-500 {
+  background-color: #dc2626;
+}
+
+.dark .risk-badge.bg-danger-600 {
+  background-color: #b91c1c;
+}
+
+.dark .risk-badge.bg-gray-500 {
+  background-color: #4b5563;
+}
+
+@media (prefers-color-scheme: dark) {
+  .system-theme .risk-badge.bg-success-500 {
+    background-color: #059669;
+  }
+
+  .system-theme .risk-badge.bg-warning-500 {
+    background-color: #d97706;
+  }
+
+  .system-theme .risk-badge.bg-danger-500 {
+    background-color: #dc2626;
+  }
+
+  .system-theme .risk-badge.bg-danger-600 {
+    background-color: #b91c1c;
+  }
+
+  .system-theme .risk-badge.bg-gray-500 {
+    background-color: #4b5563;
+  }
+} 
