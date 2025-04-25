@@ -91,23 +91,19 @@ export class ApiClient {
    * Handle a successful API response
    */
   private async handleResponse<T>(response: Response): Promise<ApiResponse<T>> {
+    return response.ok
+      ? this.createSuccessResponse(response)
+      : this.createErrorResponse(response);
+  }
+
+  /**
+   * Parse successful response into appropriate format
+   */
+  private async createSuccessResponse<T>(
+    response: Response
+  ): Promise<ApiResponse<T>> {
     const contentType = response.headers.get("content-type");
     const isJson = contentType?.includes("application/json");
-
-    if (!response.ok) {
-      const error = isJson
-        ? await response.json()
-        : { message: response.statusText };
-
-      return {
-        success: false,
-        error: {
-          message: error.message || "Unknown error",
-          code: error.code || `HTTP_${response.status}`,
-          requestId: error.requestId,
-        },
-      };
-    }
 
     if (isJson) {
       const data = await response.json();
@@ -119,6 +115,29 @@ export class ApiClient {
       error: {
         message: "Invalid response format",
         code: "INVALID_RESPONSE",
+      },
+    };
+  }
+
+  /**
+   * Create error response from failed HTTP request
+   */
+  private async createErrorResponse<T>(
+    response: Response
+  ): Promise<ApiResponse<T>> {
+    const contentType = response.headers.get("content-type");
+    const isJson = contentType?.includes("application/json");
+
+    const error = isJson
+      ? await response.json()
+      : { message: response.statusText };
+
+    return {
+      success: false,
+      error: {
+        message: error.message || "Unknown error",
+        code: error.code || `HTTP_${response.status}`,
+        requestId: error.requestId,
       },
     };
   }

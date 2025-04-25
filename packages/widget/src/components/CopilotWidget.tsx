@@ -31,6 +31,18 @@ export interface CopilotWidgetProps {
   className?: string;
 }
 
+
+  // Get the appropriate theme class based on the theme setting
+  const getThemeClass = (theme: WidgetTheme): string => {
+    if (theme === WidgetTheme.DARK) {
+      return 'dark';
+    } else if (theme === WidgetTheme.SYSTEM) {
+      return 'system-theme';
+    } else {
+      return 'light';
+    }
+  };
+
 /**
  * The main Copilot widget component that displays transaction explanations
  */
@@ -49,13 +61,7 @@ const CopilotWidget: React.FC<CopilotWidgetProps> = ({
   const [explanation, setExplanation] = useState<TransactionExplanation | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-
-  // Apply the theme
-  const themeClass = theme === WidgetTheme.DARK 
-    ? 'dark' 
-    : theme === WidgetTheme.SYSTEM 
-      ? 'system-theme' 
-      : 'light';
+  const themeClass = getThemeClass(theme);
 
   // Handle SDK events
   useEffect(() => {
@@ -94,7 +100,6 @@ const CopilotWidget: React.FC<CopilotWidgetProps> = ({
     onClose?.();
   };
 
-  // If not visible, don't render
   if (!visible) return null;
 
   return (

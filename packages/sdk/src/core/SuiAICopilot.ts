@@ -39,23 +39,13 @@ export class SuiAICopilot {
   private readonly widgetConfig: WidgetConfig;
   private readonly debug: boolean;
 
-  /** The SDK version */
   public readonly version = SDK_VERSION;
-
-  /** Event listeners */
   private readonly eventListeners: Record<string, Function[]> = {};
 
   constructor(options: SuiAICopilotOptions = {}) {
-    // Initialize API client
     this.apiClient = new ApiClient(options.api);
-
-    // Initialize widget config
     this.widgetConfig = options.widget || {};
-
-    // Debug mode
     this.debug = options.debug || false;
-
-    // Initialize event listeners
     this.eventListeners = {
       [SdkEvent.TRANSACTION_EXPLAINED]: [],
       [SdkEvent.EXPLANATION_ERROR]: [],
@@ -77,7 +67,6 @@ export class SuiAICopilot {
     this.log("Explaining transaction:", { sender });
 
     try {
-      // Create request
       const request: ExplainTransactionRequest = {
         transactionBlock,
         sender,
@@ -92,7 +81,6 @@ export class SuiAICopilot {
         );
       }
 
-      // Emit event
       this.emit(SdkEvent.TRANSACTION_EXPLAINED, response.data);
 
       return response.data;
@@ -123,7 +111,6 @@ export class SuiAICopilot {
         version: this.version,
       };
 
-      // Emit ready event when widget is loaded
       this.emit(SdkEvent.WIDGET_READY, { container });
     }
   }
