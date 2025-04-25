@@ -1,4 +1,3 @@
-import { SuiClient } from "@mysten/sui/client";
 import { Transaction } from "@mysten/sui/transactions";
 import {
   ExplainTransactionRequest,
@@ -8,10 +7,6 @@ import {
   SDK_VERSION,
 } from "@sui-ai-copilot/shared";
 import { ApiClient, ApiClientOptions } from "./ApiClient";
-import {
-  TransactionAnalyzer,
-  TransactionAnalyzerOptions,
-} from "./TransactionAnalyzer";
 
 /**
  * Events emitted by the SDK
@@ -29,8 +24,7 @@ export enum SdkEvent {
 export interface SuiAICopilotOptions {
   /** API client options */
   api?: ApiClientOptions;
-  /** Transaction analyzer options */
-  analyzer?: TransactionAnalyzerOptions;
+
   /** Widget configuration */
   widget?: WidgetConfig;
   /** Enable debug logging */
@@ -42,7 +36,6 @@ export interface SuiAICopilotOptions {
  */
 export class SuiAICopilot {
   private readonly apiClient: ApiClient;
-  private readonly analyzer: TransactionAnalyzer;
   private readonly widgetConfig: WidgetConfig;
   private readonly debug: boolean;
 
@@ -55,9 +48,6 @@ export class SuiAICopilot {
   constructor(options: SuiAICopilotOptions = {}) {
     // Initialize API client
     this.apiClient = new ApiClient(options.api);
-
-    // Initialize transaction analyzer
-    this.analyzer = new TransactionAnalyzer(options.analyzer);
 
     // Initialize widget config
     this.widgetConfig = options.widget || {};
@@ -87,15 +77,10 @@ export class SuiAICopilot {
     this.log("Explaining transaction:", { sender });
 
     try {
-      // Extract context if not provided
-      const txContext =
-        context || this.analyzer.extractTransactionContext(transactionBlock);
-
       // Create request
       const request: ExplainTransactionRequest = {
         transactionBlock,
         sender,
-        context: txContext,
       };
 
       // Get explanation from API
